@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 @using BlazorOnlineShop.Shared
 @inject HttpClient Http
+@inject NavigationManager _navigationManager
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -42,6 +43,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        var response = await Http.GetAsync("WeatherForecast");
+
+        if (response.IsSuccessStatusCode)
+        {
+            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+            return;
+        }
+
+        // redirect to login page
+        var loginAddress = "https://demo.duendesoftware.com/Account/Login?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fclient_id%3Dinteractive.confidential%26redirect_uri%3Dhttps%253A%252F%252Flocalhost%253A7230%252Fsignin-oidc%26response_type%3Dcode%26scope%3Dopenid%2520profile%2520api%2520offline_access%26code_challenge%3DhUsaC0S87t95yHDDVVSDr7KXHOvMBSee4N6wSuug0U8%26code_challenge_method%3DS256%26nonce%3D637858800812933010.ZmViMDQ3YjYtODlkYS00Y2U3LTkzZDgtNTRhMDk4Mjc2ZWEwNmNkYWU3NjMtODRlMy00Yzk2LTkzNGMtMzBmNjExYjczYjQ5%26state%3DCfDJ8OBSqE6LZFVFrkQOxOOQcuIOYSGK3xAwFb98BvgmvEyH0cejHumsspxROgD7bkuOAR791eZb8Hn_WZlKNLgRTpYebHkxtYXHLyMwIs_CmK3n0ledsOrqm350P_OM7kRvs6CRMEjcm1O0kljDY48Mdm5TLeWZjd0ooBaimy6U6ojH1F1YNhAjL29Uf4ZAo-71ujSBKw5XLU3lCuYqCu72Ar8QiTE6zPafT7kB918kAlEVFXpcuQyRpHHDOWO46UAq4-vN2ZOQFDjE7uEkJrEFiBxu7wu64bOn1BMh__on2veyGIo6eO8VNeMMEgT8Ifp9mK-EpcIOYFW3C9NhJmT06TDR0UTyWyBikdw8pGHQJ-s1A4W0u-r7t2Za4c1IgkPEbg%26x-client-SKU%3DID_NETSTANDARD2_0%26x-client-ver%3D6.10.0.0";
+        _navigationManager.NavigateTo(loginAddress);
     }
 }

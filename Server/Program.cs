@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
 builder.Services.AddBff();
 
 builder.Services.AddAuthentication(options =>
@@ -54,22 +52,21 @@ else
     app.UseHsts();
 }
 
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
+
+app.UseRouting();
 app.UseAuthentication();
 app.UseBff();
 app.UseAuthorization();
 
 app.MapBffManagementEndpoints();
+app.MapRazorPages();
+
+app.MapControllers().RequireAuthorization().AsBffApiEndpoint();
 
 app.UseHttpsRedirection();
 
-app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-
-app.MapRazorPages();
-app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();
